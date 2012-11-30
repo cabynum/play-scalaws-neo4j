@@ -1,0 +1,6 @@
+Play 2.0 application
+=====================================
+
+Using the Play! framework toDoList application (tutorial) to try out ScalaWS with the Neo4j REST API.
+
+++ This project assumes that you have installed Neo4J locally
