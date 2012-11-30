@@ -10,51 +10,57 @@ import play.Logger
 case class Task(id: Long, label: String)
 
 object Task {
-	
+
+	val neoRestBase = "http://localhost:7474/db/data/"
+	val create = "node"
+	val find = "index/auto/node/name/"
+	val indexingCheck = "index/auto/node/status"
+	val indexedProperties = "index/auto/node/properties"
+
 	def all(): List[Task] = Nil
 
-	def getByName(name: String) {
-
-	}
-
-	def create(label: String) {
-
-		Logger.info("About to create task: " + label);
-
-		val props = toJson(Map("name" -> label))
-
-		val autoIndexStatus: Promise[Response] = {
-			WS.url("http://localhost:7474/db/data/index/auto/node/status").withHeaders("Accept" -> "application/json"
-				).get()
-		}
-
-		Logger.info("Auto Index Turned On? - " + autoIndexStatus.value.get.body)
-
-		val indexedProperties: Promise[Response] = {
-			WS.url("http://localhost:7474/db/data/index/auto/node/properties").withHeaders("Accept" -> "application/json"
-				).get()
-		}
-
-		Logger.info("Properties Being Indexed - " + indexedProperties.value.get.body)
-
-		val wsresult: Promise[Response] = {
-			WS.url("http://localhost:7474/db/data/node").withHeaders("Accept" -> "application/json",
-				"Content-Type" -> "application/json").post(stringify(props))
-		}
-
-		Logger.info("WS response is: " + wsresult.value.get.body)
+	def find(name: String) {
 
 		//If finding a node with spaces in the name, spaces should be replaced by %20
-
-		val nodeByNameURL = "http://localhost:7474/db/data/index/auto/node/name/" + label
-
 		val resultNode: Promise[Response] = {
-			WS.url(nodeByNameURL).withHeaders("Accept" -> "application/json").get()
+			WS.url((neoRestBase + find + name)).withHeaders("Accept" -> "application/json").get()
 		}
 
 		Logger.info("Specific Node - " + resultNode.value.get.body)
 
-		
+	}
+
+	def printIndexingStatus() {
+
+		val status: Promise[Response] = {
+			WS.url((neoRestBase + indexingCheck)).withHeaders("Accept" -> "application/json"
+				).get()
+		}
+
+		Logger.info("Auto Index Turned On? - " + status.value.get.body)
+	}
+
+	def printIndexedProperties() {
+
+		val properties: Promise[Response] = {
+			WS.url((neoRestBase + indexedProperties)).withHeaders("Accept" -> "application/json"
+				).get()
+		}
+
+		Logger.info("Properties Being Indexed - " + properties.value.get.body)
+	}
+
+	def create(label: String) {
+
+		val props = toJson(Map("name" -> label))
+
+		val wsresult: Promise[Response] = {
+			WS.url((neoRestBase + create)).withHeaders("Accept" -> "application/json",
+				"Content-Type" -> "application/json").post(stringify(props))
+		}
+
+		Logger.info("Task creation response is: " + wsresult.value.get.body)
+
 	}
 
 	def delete(id: Long) {}

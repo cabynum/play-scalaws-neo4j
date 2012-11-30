@@ -18,7 +18,6 @@ object Application extends Controller {
   * routes configuration.
   */
   def index = Action {
-    //Ok(views.html.index("CBynum To-Do List"))
     Redirect(routes.Application.tasks)
   }
 
