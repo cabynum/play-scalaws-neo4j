@@ -17,7 +17,7 @@ object ApplicationBuild extends Build {
 
     	libraryDependencies ++= Seq(
     		"org.neo4j.app" % "neo4j-server" % "1.9.M01" classifier "static-web" classifier "",
-    		"com.sun.jersey" % "jersey-core" % "1.9"
+    		"com.sun.jersey" % "jersey-core" % "1.9", "net.liftweb" %% "lift-json" % "2.4-M5"
     		),
 
     	/** Repos for Neo4j Admin server dep */
